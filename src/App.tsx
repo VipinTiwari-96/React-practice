@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import PostCard from "./PostCard";
 
+export interface Post {
+  userId: number;
+  id: number;
+  title: string;
+  body: string;
+}
 function App() {
+  const [posts, setPosts] = useState<Post[]>([]);
+
+  useEffect(() => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts?limit=10")
+      .then((data) => setPosts(data.data));
+  }, []);
+
+  const handleBookMarkClick = (post: Post) => {
+    const bookMarkedItems = localStorage.getItem("bookmarks");
+    let array = [];
+    array.push(bookMarkedItems);
+    array.push(post.id);
+    localStorage.setItem("bookmarks", JSON.stringify(array));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex flex-wrap gap-5 p-5">
+      {posts?.map((item, key) => (
+        <PostCard post={item} handleBookMarkClick={handleBookMarkClick} />
+      ))}
     </div>
   );
 }
