@@ -18,9 +18,12 @@ function App() {
   }, []);
 
   const handleBookMarkClick = (post: Post) => {
-    const bookMarkedItems = localStorage.getItem("bookmarks");
-    let array = [];
-    array.push(bookMarkedItems);
+    const bookMarkedItems = JSON.parse(
+      localStorage.getItem("bookmarks") as string
+    );
+    console.log(bookMarkedItems);
+    let array = [...(bookMarkedItems ?? [])];
+
     array.push(post.id);
     localStorage.setItem("bookmarks", JSON.stringify(array));
   };
